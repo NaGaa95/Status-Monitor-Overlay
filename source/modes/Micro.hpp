@@ -18,6 +18,9 @@ private:
     char GPU_volt_c[16];
     char RAM_volt_c[32];
     char SOC_volt_c[16];
+	char CPU_temp_c[32];
+    char GPU_temp_c[32];
+    char RAM_temp_c[32];
     char RES_var_compressed_c[32];
     char READ_var_compressed_c[32];
     char DTC_c[32];
@@ -539,7 +542,127 @@ public:
 
                 if (settings.useDynamicColors) {
                     // Draw data with temperature gradient support
-                    if (item.type == 3) { // SOC temperature
+					if (item.type == 0) { // CPU
+						std::string dataStr(item.data_ptr);
+						const size_t degreesPos = dataStr.find("°");
+						if (degreesPos != std::string::npos && settings.realTemps && realCPU_Temp != 0) {
+							size_t tempStart = dataStr.rfind(' ', degreesPos);
+							if (tempStart != std::string::npos) {
+							tempStart++;
+							const size_t cPos = dataStr.find("C", degreesPos);
+							if (cPos != std::string::npos) {
+								const size_t tempEnd = cPos + 1;
+								
+								const std::string preTempPart = dataStr.substr(0, tempStart);
+								const std::string tempPart = dataStr.substr(tempStart, tempEnd - tempStart);
+								const std::string postTempPart = dataStr.substr(tempEnd);
+								
+							    const float temp = realCPU_Temp / 1000.0f;
+								const tsl::Color tempColor = tsl::GradientColor(temp);
+								
+								uint32_t renderX = current_x;
+								if (!preTempPart.empty()) {
+								renderer->drawStringWithColoredSections(preTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+								renderX += renderer->getTextDimensions(preTempPart, false, fontsize).first;
+								}
+                
+								renderer->drawStringWithColoredSections(tempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, tempColor, a(settings.separatorColor));
+                
+								if (!postTempPart.empty()) {
+								renderX += renderer->getTextDimensions(tempPart, false, fontsize).first;
+								renderer->drawStringWithColoredSections(postTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+							}
+						} else {
+							renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+						}
+					} else {
+						renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+					}
+				} else {
+					renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+				}
+    
+					} else if (item.type == 1) { // GPU
+						std::string dataStr(item.data_ptr);
+						const size_t degreesPos = dataStr.find("°");
+						if (degreesPos != std::string::npos && settings.realTemps && realGPU_Temp != 0) {
+							size_t tempStart = dataStr.rfind(' ', degreesPos);
+							if (tempStart != std::string::npos) {
+							tempStart++;
+							const size_t cPos = dataStr.find("C", degreesPos);
+							if (cPos != std::string::npos) {
+								const size_t tempEnd = cPos + 1;
+								
+								const std::string preTempPart = dataStr.substr(0, tempStart);
+								const std::string tempPart = dataStr.substr(tempStart, tempEnd - tempStart);
+								const std::string postTempPart = dataStr.substr(tempEnd);
+								
+							    const float temp = realGPU_Temp / 1000.0f;
+								const tsl::Color tempColor = tsl::GradientColor(temp);
+								
+								uint32_t renderX = current_x;
+								if (!preTempPart.empty()) {
+								renderer->drawStringWithColoredSections(preTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+								renderX += renderer->getTextDimensions(preTempPart, false, fontsize).first;
+								}
+                
+								renderer->drawStringWithColoredSections(tempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, tempColor, a(settings.separatorColor));
+                
+								if (!postTempPart.empty()) {
+								renderX += renderer->getTextDimensions(tempPart, false, fontsize).first;
+								renderer->drawStringWithColoredSections(postTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+							}
+						} else {
+							renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+						}
+					} else {
+						renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+					}
+				} else {
+					renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+				}
+				
+					} else if (item.type == 2) { // RAM
+					std::string dataStr(item.data_ptr);
+					const size_t degreesPos = dataStr.find("°");
+					if (degreesPos != std::string::npos && settings.realTemps && realRAM_Temp != 0) {
+						size_t tempStart = dataStr.rfind(' ', degreesPos);
+						if (tempStart != std::string::npos) {
+						tempStart++;
+						const size_t cPos = dataStr.find("C", degreesPos);
+						if (cPos != std::string::npos) {
+							const size_t tempEnd = cPos + 1;
+								
+							const std::string preTempPart = dataStr.substr(0, tempStart);
+							const std::string tempPart = dataStr.substr(tempStart, tempEnd - tempStart);
+							const std::string postTempPart = dataStr.substr(tempEnd);
+								
+							const float temp = realRAM_Temp / 1000.0f;
+							const tsl::Color tempColor = tsl::GradientColor(temp);
+								
+							uint32_t renderX = current_x;
+							if (!preTempPart.empty()) {
+							renderer->drawStringWithColoredSections(preTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+							renderX += renderer->getTextDimensions(preTempPart, false, fontsize).first;
+							}
+                
+							renderer->drawStringWithColoredSections(tempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, tempColor, a(settings.separatorColor));
+                
+							if (!postTempPart.empty()) {
+							renderX += renderer->getTextDimensions(tempPart, false, fontsize).first;
+							renderer->drawStringWithColoredSections(postTempPart, false, specialChars, renderX, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+						}
+					} else {
+						renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+					}
+				} else {
+					renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+					}
+			} else {
+					renderer->drawStringWithColoredSections(item.data_ptr, false, specialChars, current_x, base_y + cachedMargin, fontsize, textColorA, a(settings.separatorColor));
+			}
+					
+					} else  if (item.type == 3) { // SOC temperature
                         // Parse SOC temperature: "XX°C (XX%)"
                         std::string dataStr(item.data_ptr);
                         const size_t degreesPos = dataStr.find("°");
@@ -758,6 +881,12 @@ public:
                 "%.0f%%%s%u.%u", 
                 maxUsage, cpuDiff, cpuFreq / 1000000, (cpuFreq / 100000) % 10);
         }
+		
+		 if (settings.realTemps && realCPU_Temp != 0) {
+            char temp_buffer[48];
+            snprintf(temp_buffer, sizeof(temp_buffer), " %s", CPU_temp_c);
+            strncat(CPU_compressed_c, temp_buffer, sizeof(CPU_compressed_c) - strlen(CPU_compressed_c) - 1);
+        }
             
         //if (settings.realVolts) {
         //    snprintf(CPU_volt_c, sizeof(CPU_volt_c), "%u.%u mV", 
@@ -782,6 +911,12 @@ public:
                  "%u%%%s%u.%u",
                  GPU_Load_u / 10,
                  gpuDiff, gpuFreq / 1000000, (gpuFreq / 100000) % 10);
+				 
+		if (settings.realTemps && realGPU_Temp != 0) {
+            char temp_buffer[48];
+            snprintf(temp_buffer, sizeof(temp_buffer), " %s", GPU_temp_c);
+            strncat(GPU_Load_c, temp_buffer, sizeof(GPU_Load_c) - strlen(GPU_Load_c) - 1);
+        }
             
         //if (settings.realVolts) {
         //    snprintf(GPU_volt_c, sizeof(GPU_volt_c), "%u.%u mV", 
@@ -841,6 +976,12 @@ public:
         snprintf(RAM_var_compressed_c, sizeof(RAM_var_compressed_c), 
             "%s%s%u.%u", MICRO_RAM_all_c, ramDiff, 
             ramFreq / 1000000, (ramFreq / 100000) % 10);
+			
+		if (settings.realTemps && realRAM_Temp != 0) {
+            char temp_buffer[48];
+            snprintf(temp_buffer, sizeof(temp_buffer), " %s", RAM_temp_c);
+            strncat(RAM_var_compressed_c, temp_buffer, sizeof(RAM_var_compressed_c) - strlen(RAM_var_compressed_c) - 1);
+        }
             
         //if (settings.realVolts) {
         //    uint32_t vdd2 = realRAM_mV / 10000;
@@ -955,6 +1096,18 @@ public:
         } else {
             SOC_volt_c[0] = '\0'; // Clear the buffer when disabled
         }
+		
+		if (settings.realTemps) {
+		if (realCPU_Temp != 0) {
+        snprintf(CPU_temp_c, sizeof(CPU_temp_c), " %.1f°C", realCPU_Temp / 1000.0f);
+		}
+		if (realGPU_Temp != 0) {
+        snprintf(GPU_temp_c, sizeof(GPU_temp_c), " %.1f°C", realGPU_Temp / 1000.0f);
+		}
+		if (realRAM_Temp != 0) {
+        snprintf(RAM_temp_c, sizeof(RAM_temp_c), " %.1f°C", realRAM_Temp / 1000.0f);
+		}
+}
 
         // Resolution processing
         //char RES_var_compressed_c[32] = "";

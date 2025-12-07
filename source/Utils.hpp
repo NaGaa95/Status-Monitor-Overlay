@@ -229,6 +229,11 @@ uint32_t realRAM_mV = 0;
 uint32_t realSOC_mV = 0; 
 uint8_t refreshRate = 0;
 
+//Read real temps from sys-clk sysmodule
+int32_t realCPU_Temp = 0;
+int32_t realGPU_Temp = 0;
+int32_t realRAM_Temp = 0;
+
 int compare (const void* elem1, const void* elem2) {
     if ((((resolutionCalls*)(elem1))->calls) > (((resolutionCalls*)(elem2))->calls)) return -1;
     else return 1;
@@ -578,6 +583,9 @@ void Misc(void*) {
                 realRAM_Hz = sysclkCTX.realFreqs[SysClkModule_MEM];
                 ramLoad[SysClkRamLoad_All] = sysclkCTX.ramLoad[SysClkRamLoad_All];
                 ramLoad[SysClkRamLoad_Cpu] = sysclkCTX.ramLoad[SysClkRamLoad_Cpu];
+				realCPU_Temp = sysclkCTX.reserved[0];
+				realGPU_Temp = sysclkCTX.reserved[1];
+				realRAM_Temp = sysclkCTX.reserved[2];
                 
                 // If using EOS, get voltages from sys-clk
                 if (isUsingEOS && realVoltsPolling) {
@@ -1372,6 +1380,7 @@ struct MiniSettings {
     uint8_t refreshRate;
     bool realFrequencies;
     bool realVolts;
+	bool realTemps;
     bool showFullCPU;
     bool showFullResolution;
     bool showFanPercentage;
@@ -1407,6 +1416,7 @@ struct MicroSettings {
     uint8_t refreshRate;
     bool realFrequencies;
     bool realVolts; 
+	bool realTemps;
     bool showFullCPU;
     bool showFullResolution;
     bool showSOCVoltage;
@@ -1489,6 +1499,7 @@ ALWAYS_INLINE void GetConfigSettings(MiniSettings* settings) {
     // Initialize defaults
     settings->realFrequencies = true;
     settings->realVolts = true;
+	settings->realTemps = true;
     settings->showFullCPU = false;
     settings->showFullResolution = true;
     settings->showFanPercentage = true;
@@ -1781,6 +1792,7 @@ ALWAYS_INLINE void GetConfigSettings(MicroSettings* settings) {
     // Initialize defaults
     settings->realFrequencies = true;
     settings->realVolts = true;
+	settings->realTemps = true;
     settings->showFullCPU = false;
     settings->showFullResolution = false;
     settings->showSOCVoltage = true;
@@ -1850,6 +1862,13 @@ ALWAYS_INLINE void GetConfigSettings(MicroSettings* settings) {
         convertToUpper(key);
         settings->realVolts = (key == "TRUE");
     }
+	
+	it = section.find("real_temps");
+	if (it != section.end()) {
+    key = it->second;
+    convertToUpper(key);
+    settings->realTemps = (key == "TRUE");
+	}
     
     it = section.find("show_full_cpu");
     if (it != section.end()) {
