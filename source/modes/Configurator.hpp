@@ -392,6 +392,12 @@ public:
                 ult::setIniFileValue(configIniPath, section, "real_volts", state ? "true" : "false");
             });
             list->addItem(realVolts);
+			
+			auto* realTemps = new tsl::elm::ToggleListItem("Real Temperatures", getCurrentRealTemps());
+			realTemps->setStateChangedListener([this, section](bool state) {
+				ult::setIniFileValue(configIniPath, section, "real_temps", state ? "true" : "false");
+			});
+			list->addItem(realTemps);
             
             auto* showFullCPU = new tsl::elm::ToggleListItem("Full CPU", getCurrentShowFullCPU());
             showFullCPU->setStateChangedListener([this, section](bool state) {
@@ -399,13 +405,13 @@ public:
             });
             list->addItem(showFullCPU);
             
-            auto* showVDDQ = new tsl::elm::ToggleListItem("VDDQ", getCurrentShowVDDQ());
+            auto* showVDDQ = new tsl::elm::ToggleListItem("VDD2", getCurrentShowVDDQ());
             showVDDQ->setStateChangedListener([this, section](bool state) {
                 ult::setIniFileValue(configIniPath, section, "show_vddq", state ? "true" : "false");
             });
             list->addItem(showVDDQ);
 
-            auto* showVDD2 = new tsl::elm::ToggleListItem("VDD2", getCurrentShowVDD2());
+            auto* showVDD2 = new tsl::elm::ToggleListItem("VDDQ", getCurrentShowVDD2());
             showVDD2->setStateChangedListener([this, section](bool state) {
                 ult::setIniFileValue(configIniPath, section, "show_vdd2", state ? "true" : "false");
             });
@@ -533,6 +539,14 @@ private:
         convertToUpper(value);
         return value == "TRUE";
     }
+	
+	bool getCurrentRealTemps() {
+		const std::string section = isMiniMode ? "mini" : "micro";
+		std::string value = ult::parseValueFromIniSection(configIniPath, section, "real_temps");
+		if (value.empty()) return true;
+		convertToUpper(value);
+		return value == "TRUE";
+	}
     
     bool getCurrentShowFullCPU() {
         const std::string section = isMiniMode ? "mini" : "micro";

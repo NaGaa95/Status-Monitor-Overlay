@@ -358,7 +358,7 @@ public:
                                 width = renderer->getTextDimensions("100%@4444.4444 mV", false, fontsize).first;
                         }
 						    if (settings.realTemps) {
-								width += renderer->getTextDimensions(" 88.8°C", false, fontsize).first;
+								width += renderer->getTextDimensions(" 888.8°C", false, fontsize).first;
 							}
                     } else if (key == "GPU" || (key == "RAM" && settings.showRAMLoad && R_SUCCEEDED(sysclkCheck))) {
                         //dimensions = renderer->drawString("100.0%@4444.4", false, 0, 0, fontsize, renderer->a(0x0000));
@@ -1002,7 +1002,7 @@ public:
         // Variables to store formatted strings
         char MINI_CPU_compressed_c[42] = "";
         char MINI_CPU_volt_c[16] = "";
-        char MINI_GPU_Load_c[20] = "";
+        char MINI_GPU_Load_c[32] = "";
         char MINI_GPU_volt_c[20] = "";
         char MINI_RAM_var_compressed_c[35] = "";
         char MINI_RAM_volt_c[32] = "";
@@ -1072,7 +1072,7 @@ public:
 		
 		if (settings.realTemps && realCPU_Temp != 0) {
                 char temp_buffer[48];
-                snprintf(temp_buffer, sizeof(temp_buffer), "%s", CPU_temp_c);
+                snprintf(temp_buffer, sizeof(temp_buffer), " %s", CPU_temp_c);
                 strncat(MINI_CPU_compressed_c, temp_buffer, sizeof(MINI_CPU_compressed_c) - strlen(MINI_CPU_compressed_c) - 1);
             }
     
@@ -1112,7 +1112,7 @@ public:
 		
 		    if (settings.realTemps && realGPU_Temp != 0) {
                 char temp_buffer[48];
-                snprintf(temp_buffer, sizeof(temp_buffer), "%s", GPU_temp_c);
+                snprintf(temp_buffer, sizeof(temp_buffer), " %s", GPU_temp_c);
                 strncat(MINI_GPU_Load_c, temp_buffer, sizeof(MINI_GPU_Load_c) - strlen(MINI_GPU_Load_c) - 1);
             }
     
@@ -1192,7 +1192,7 @@ public:
             if (settings.realVolts) {
                 const float mv_vdd2_f = realRAM_mV / 100000.0f;
                 const uint32_t mv_vdd2_i = realRAM_mV / 100000;
-                const uint32_t mv_vddq   = (realRAM_mV % 10000) / 10;
+                const uint32_t mv_vddq   = (realRAM_mV % 100000) / 10;
             
                 if (isMariko) {
                     if (settings.showVDDQ && settings.showVDD2) {
@@ -1220,7 +1220,7 @@ public:
         }
 		    if (settings.realTemps && realRAM_Temp != 0) {
                 char temp_buffer[48];
-                snprintf(temp_buffer, sizeof(temp_buffer), "%s", RAM_temp_c);
+                snprintf(temp_buffer, sizeof(temp_buffer), " %s", RAM_temp_c);
                 strncat(MINI_RAM_var_compressed_c, temp_buffer, sizeof(MINI_RAM_var_compressed_c) - strlen(MINI_RAM_var_compressed_c) - 1);
             }
     
@@ -1290,13 +1290,13 @@ public:
 		
 		if (settings.realTemps) {
             if (realCPU_Temp != 0) {
-                snprintf(CPU_temp_c, sizeof(CPU_temp_c), "%.1f°C", realCPU_Temp / 1000.0f);
+                snprintf(CPU_temp_c, sizeof(CPU_temp_c), "%.1f°C", realCPU_Temp / 1000.0f);
             }
             if (realGPU_Temp != 0) {
-                snprintf(GPU_temp_c, sizeof(GPU_temp_c), "%.1f°C", realGPU_Temp / 1000.0f);
+                snprintf(GPU_temp_c, sizeof(GPU_temp_c), "%.1f°C", realGPU_Temp / 1000.0f);
             }
             if (realRAM_Temp != 0) {
-                snprintf(RAM_temp_c, sizeof(RAM_temp_c), "%.1f°C", realRAM_Temp / 1000.0f);
+                snprintf(RAM_temp_c, sizeof(RAM_temp_c), "%.1f°C", realRAM_Temp / 1000.0f);
             }
 		}
     

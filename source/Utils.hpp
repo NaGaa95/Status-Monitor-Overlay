@@ -1576,7 +1576,13 @@ ALWAYS_INLINE void GetConfigSettings(MiniSettings* settings) {
         convertToUpper(key);
         settings->realVolts = (key == "TRUE");
     }
-    
+	
+    it = section.find("real_temps");
+	if (it != section.end()) {
+		key = it->second;
+		convertToUpper(key);
+		settings->realTemps = (key == "TRUE");
+	}
     // Process font sizes with shared bounds
     static constexpr long minFontSize = 8;
     static constexpr long maxFontSize = 22;
@@ -1865,10 +1871,10 @@ ALWAYS_INLINE void GetConfigSettings(MicroSettings* settings) {
 	
 	it = section.find("real_temps");
 	if (it != section.end()) {
-    key = it->second;
-    convertToUpper(key);
-    settings->realTemps = (key == "TRUE");
-	}
+		key = it->second;
+		convertToUpper(key);
+		settings->realTemps = (key == "TRUE");
+		}
     
     it = section.find("show_full_cpu");
     if (it != section.end()) {
